@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/loot")
@@ -13,10 +15,13 @@ public class LootController {
     @Autowired
     LootAssignmentService lootAssignmentService;
 
-    @PostMapping("/assign")
-    public ResponseEntity<String> assignLoot(@RequestBody List<LootAssignment> lootAssignment) {
+    @PostMapping("/import")
+    public ResponseEntity<Map<String, Object>> assignLoot(@RequestBody List<LootAssignment> lootAssignment) {
         lootAssignmentService.addLootAssignments(lootAssignment);
-        return ResponseEntity.ok(lootAssignment.toString());
+        Map<String, Object> response = new HashMap<>();
+        response.put("size", lootAssignment.size());
+        response.put("lootAssignments", lootAssignment);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/search")
