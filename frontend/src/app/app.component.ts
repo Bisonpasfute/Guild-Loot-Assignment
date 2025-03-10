@@ -4,26 +4,53 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';  // Make sure MatDialog is imported
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';  // Import FormsModule
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table'
+
+export interface LootAssignment {
+  id: string;
+  player: string;
+  date: string;
+  time: string;
+  itemID: number;
+  itemString: string;
+  response: string;
+  votes: number;
+  class: string;
+  instance: string;
+  boss: string;
+  gear1: string;
+  gear2: string;
+  responseID: number;
+  isAwardReason: string;
+  rollType: string;
+  subType: string;
+  equipLoc: string;
+  note: string;
+  owner: string;
+  itemName: string;
+  servertime: number;
+}
 
 @Component({
   selector: 'app-root',
-  imports: [MatDialogModule, FormsModule],
+  imports: [MatDialogModule, FormsModule, MatPaginatorModule, MatTableModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  tableData = []; // Data to display in the table
-  filteredData = []; // Data after applying filters
-  filters = {}; // Store column filters
-  tableColumns = [
-    { name: 'Item Name', field: 'itemName' },
-    { name: 'Owner', field: 'owner' },
-    { name: 'Date', field: 'date' },
-    { name: 'Value', field: 'value' }
-  ];
+  dataSource: MatTableDataSource<LootAssignment> = new MatTableDataSource<LootAssignment>(); // Set type here
+  displayedColumns = ['player', 'date', 'itemID', 'class'];
   jsonInput = ''; // Store pasted JSON string
 
   @ViewChild('importDialog') importDialog!: TemplateRef<any>;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  ngAfterViewInit() {
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
+  }
 
   // Inject HttpClient and MatDialog
   constructor(private http: HttpClient, private dialog: MatDialog) {} // Inject MatDialog here
@@ -72,8 +99,10 @@ export class AppComponent {
             // You can use responseBody to get the message, processedCount, etc.
             console.log('Loot assignments uploaded successfully:', responseBody.message);
             this.closeDialog(); // Close the dialog after successful upload
-            this.tableData = jsonData; // Set table data to the uploaded JSON
-            this.filteredData = jsonData;
+            const data : LootAssignment[] = jsonData;
+            console.log(data);
+            this.dataSource = new MatTableDataSource<LootAssignment>(data); // Set table data to the uploaded JSON
+            this.dataSource.paginator = this.paginator; // Re-assign paginator
           } else {
             console.error('Unexpected response status:', response.status);
             alert('Failed to upload JSON!');

@@ -66,5 +66,22 @@ mat-dialog-content {
 }
 
 mat-dialog-actions {
-  justify-content: flex-end;
+  justify-content: space-evenly;
+}
+
+mat-dialog-actions button {
+  width: 33%; /* Makes all buttons take up the full width of the container */
+  padding: 10px 20px; /* Adjust padding for consistency */
+  font-size: 14px; /* Set a consistent font size */
+  text-align: center; /* Ensure text is centered */
+}
+
+mat-dialog-actions {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+}
+
+mat-dialog-actions button.mat-raised-button,
+mat-dialog-actions button.mat-button {
+  width: 100%; /* Ensures all buttons fill the container width */
 }
