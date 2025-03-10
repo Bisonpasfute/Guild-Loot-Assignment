@@ -24,8 +24,25 @@ public class LootController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<LootAssignment>> search(@RequestBody LootFilter lootFilter) {
-        List<LootAssignment> lootAssignments = lootAssignmentService.search(lootFilter);
+    public ResponseEntity<List<LootAssignment>> search(@RequestParam(required = false) String player,
+                                                       @RequestParam(required = false) String date,
+                                                       @RequestParam(required = false) String itemId,
+                                                       @RequestParam(required = false) String playerClass,
+                                                       @RequestParam(required = false) String equipLoc
+    ) {
+        LootFilter lootFilter = new LootFilter();
+        lootFilter.setPlayer(player);
+        lootFilter.setDate(date);
+        lootFilter.setItemId(itemId);
+        lootFilter.setPlayerClass(playerClass);
+        lootFilter.setEquipLoc(equipLoc);
+        List<LootAssignment> lootAssignments = null;
+        if (lootFilter.isEmpty()) {
+            lootAssignments = lootAssignmentService.findAll();
+        }
+        else {
+            lootAssignments = lootAssignmentService.search(lootFilter);
+        }
         return ResponseEntity.ok(lootAssignments);
     }
 }

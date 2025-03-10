@@ -18,4 +18,8 @@ public class LootFilter {
 
     @JsonProperty("equip_loc")
     private String equipLoc;
+
+    public boolean isEmpty() {
+        return player == null && date == null && itemId == null && playerClass == null && equipLoc == null;
+    }
 }

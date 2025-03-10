@@ -22,4 +22,8 @@ public class LootAssignmentService {
                 lootFilter.getEquipLoc()
         );
     }
+
+    public List<LootAssignment> findAll() {
+        return lootAssignmentRepository.findAll();
+    }
 }

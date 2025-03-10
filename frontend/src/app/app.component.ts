@@ -1,6 +1,6 @@
 import { Component, ViewChild, TemplateRef, AfterViewInit, Inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpParams, HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';  // Make sure MatDialog is imported
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';  // Import FormsModule
@@ -47,6 +47,7 @@ export class AppComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngAfterViewInit() {
+    this.searchDatabase();
     if (this.paginator) {
       this.dataSource.paginator = this.paginator;
     }
@@ -75,6 +76,35 @@ export class AppComponent {
       const jsonData = JSON.parse(reader.result as string);
       this.jsonInput = JSON.stringify(jsonData); // Set the content of the file into the text area
     };
+  }
+
+  searchDatabase() {
+    const params = new HttpParams()
+
+    this.http.get('http://localhost:8080/loot/search', {
+      observe: 'response',
+      params: params
+    }).subscribe(
+      (response: any) => {
+        // Log the full response to debug
+        console.log('Response:', response);
+        if (response.status === 200) {
+          // Access the response body (which is now a structured JSON)
+          const responseBody = response.body;
+          console.log('Response body:', responseBody);
+          const data: LootAssignment[] = responseBody;
+          this.dataSource = new MatTableDataSource<LootAssignment>(data); // Set table data to the uploaded JSON
+          this.dataSource.paginator = this.paginator; // Re-assign paginator
+        } else {
+          console.error('Unexpected response status:', response.status);
+          alert('Failed to upload JSON!');
+        }
+      },
+      (error: any) => {
+        console.error('Error uploading JSON:', error);
+        alert('Failed to upload JSON!');
+      }
+    );
   }
 
   // Upload the JSON to the Backend
