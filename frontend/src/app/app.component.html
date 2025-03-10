@@ -1,0 +1,22 @@
+<div class="upload-section">
+  <button mat-raised-button color="primary" (click)="openImportDialog()">Import JSON</button>
+</div>
+
+<ng-template #importDialog>
+  <h2 mat-dialog-title>Import JSON Data</h2>
+  <mat-dialog-content>
+    <div>
+      <textarea [(ngModel)]="jsonInput" name="jsonInput" placeholder="Paste your JSON here" rows="10" cols="50"></textarea>
+      <div class="file-upload-section">
+        <button onclick="document.getElementById('fileInput').click()">Upload File</button>
+        <input style="display:none;" type="file" id="fileInput" (change)="onFileSelected($event)" accept=".json">
+      </div>
+      <div>
+        <button mat-raised-button color="primary" (click)="uploadJson()">Import</button>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button (click)="closeDialog()">Close</button>
+  </mat-dialog-actions>
+</ng-template>
